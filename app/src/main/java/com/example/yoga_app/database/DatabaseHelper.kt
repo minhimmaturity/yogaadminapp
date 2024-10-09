@@ -1,33 +1,33 @@
 package com.example.yoga_app.database
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.Database
+import com.example.yoga_app.dao.UserDao
+import com.example.yoga_app.dao.YogaClassDao
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+@Database(entities = [User::class, YogaClass::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+    abstract fun yogaClassDao(): YogaClassDao
 
     companion object {
-        private const val DATABASE_NAME = "mydatabase.db"
-        private const val DATABASE_VERSION = 1
-    }
+        private const val DATABASE_NAME = "app_database"
 
-    override fun onCreate(db: SQLiteDatabase) {
-        val createTableSQL = """
-            CREATE TABLE users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE
-            );
-        """
-        db.execSQL(createTableSQL)
-    }
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS users")
-        onCreate(db)
-    }
-
-    fun connectDatabase(): SQLiteDatabase {
-        return this.writableDatabase
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    DATABASE_NAME
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
     }
 }
