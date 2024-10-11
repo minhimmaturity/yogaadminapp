@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("com.google.gms.google-services")
 
 }
 
@@ -73,6 +74,12 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    implementation("androidx.compose.material:material-icons-extended:1.0.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx:21.3.0")
 
     // AndroidX libraries
     implementation(libs.androidx.core.ktx)
