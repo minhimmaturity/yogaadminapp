@@ -9,6 +9,8 @@ import com.example.yoga_app.view.CenterAlignedTopAppBarExample
 import com.example.yoga_app.view.CreateScreen
 import com.example.yoga_app.view.LoginScreen
 import com.example.yoga_app.view.SettingScreen
+import com.example.yoga_app.dao.YogaClassDao
+import com.example.yoga_app.viewmodel.YogaClassAppViewModel
 
 sealed class Routes(val route: String) {
     object Login: Routes("Login")

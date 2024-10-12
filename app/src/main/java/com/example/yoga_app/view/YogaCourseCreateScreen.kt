@@ -9,6 +9,8 @@ import androidx.navigation.NavController
 import com.example.yoga_app.component.CreateYogaCourse
 import com.example.yoga_app.component.Footer
 import com.example.yoga_app.component.Header
+import com.example.yoga_app.dao.YogaClassDao
+import com.example.yoga_app.viewmodel.YogaClassAppViewModel
 
 @Composable
 fun CreateScreen(modifier: Modifier = Modifier, navController: NavController) {
