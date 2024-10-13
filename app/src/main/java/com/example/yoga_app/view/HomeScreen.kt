@@ -23,11 +23,13 @@ fun CenterAlignedTopAppBarExample(modifier: Modifier = Modifier, navController: 
     val viewModel: YogaClassCourseViewModel = viewModel(
         factory = YogaClassAppViewModelFactory(yogaCourseDao)
     )
+    val isCreatingClass = false
+
 
     Scaffold(
         modifier = modifier,
         topBar = { Header(navController, context) },
-        bottomBar = { Footer(navController) }
+        bottomBar = { Footer(navController, isCreatingClass, "") }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             YogaCourseBody(viewModel, navController)

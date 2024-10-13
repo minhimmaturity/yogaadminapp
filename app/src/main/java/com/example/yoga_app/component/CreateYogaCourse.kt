@@ -275,7 +275,6 @@ fun CreateYogaCourse(courseId: String?) {
                                 viewModel.updateCourse(updateYogaCourse)
                                 Toast.makeText(context, "Yoga class updated successfully", Toast.LENGTH_SHORT).show()
                             } else {
-                                // Insert new course
                                 viewModel.insertYogaClass(newYogaClass)
                                 Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
                             }
@@ -292,7 +291,15 @@ fun CreateYogaCourse(courseId: String?) {
             enabled = isFormValid,
             colors = ButtonDefaults.buttonColors(disabledContainerColor = Color.Gray)
         ) {
-            Text(text = "Save", fontSize = 18.sp, modifier = Modifier.padding(4.dp))
+            if (courseId != null) {
+                if (courseId.isNotEmpty()) {
+                    Text(text = "Update", fontSize = 18.sp, modifier = Modifier.padding(4.dp))
+                } else {
+                    Text(text = "Save", fontSize = 18.sp, modifier = Modifier.padding(4.dp))
+                }
+
+            }
+
         }
     }
 }

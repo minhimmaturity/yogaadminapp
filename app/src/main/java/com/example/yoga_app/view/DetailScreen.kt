@@ -29,10 +29,11 @@ fun DetailScreen(modifier: Modifier = Modifier, navController: NavController, co
     val viewModel: YogaClassViewModel = viewModel(
         factory = YogaClassViewModelFactory(yogaClassDao)
     )
+    val isCreatingClass = true
     Scaffold(
         modifier = modifier,
         topBar = { Header(navController, context) },
-        bottomBar = { Footer(navController) }
+        bottomBar = { Footer(navController, isCreatingClass, courseId) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             YogaClassBody(viewModel, courseId)

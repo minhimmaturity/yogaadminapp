@@ -16,10 +16,11 @@ import com.example.yoga_app.component.Header
 @Composable
 fun SettingScreen(modifier: Modifier = Modifier, navController: NavController) {
     val context = LocalContext.current
+    val isCreatingClass = false
     Scaffold(
         modifier = modifier,
         topBar = { Header(navController, context) },
-        bottomBar = { Footer(navController) }
+        bottomBar = { Footer(navController, isCreatingClass, "") }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             Text(text = "Setting")

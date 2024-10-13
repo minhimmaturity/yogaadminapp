@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import com.example.yoga_app.Routes
 
 @Composable
-fun Footer(navController: NavController) {
+fun Footer(navController: NavController, isCreatingClass: Boolean, courseId: String?) {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         content = {
@@ -36,8 +36,15 @@ fun Footer(navController: NavController) {
                     Text("Home", style = MaterialTheme.typography.bodySmall)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    IconButton(onClick = { navController.navigate(Routes.Create.route) }) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Create Class")
+                    // Update the action based on whether a class is being created
+                    IconButton(onClick = {
+                        if (isCreatingClass) {
+                            navController.navigate("CreateClass/$courseId")
+                        } else {
+                            navController.navigate(Routes.Create.route)
+                        }
+                    }) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Create")
                     }
                     Text("Create", style = MaterialTheme.typography.bodySmall)
                 }

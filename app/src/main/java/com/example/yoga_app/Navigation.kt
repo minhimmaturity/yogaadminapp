@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.yoga_app.component.CreateYogaClass
 import com.example.yoga_app.view.CenterAlignedTopAppBarExample
 import com.example.yoga_app.view.CreateScreen
+import com.example.yoga_app.view.CreateYogaClassScreen
 import com.example.yoga_app.view.DetailScreen
 import com.example.yoga_app.view.LoginScreen
 import com.example.yoga_app.view.SettingScreen
@@ -20,6 +22,7 @@ sealed class Routes(val route: String) {
     data object Setting : Routes("Setting")
     data object Detail : Routes("Detail/{id}")
     data object Edit: Routes("Edit/{courseId}")
+    data object CreateClass: Routes("CreateClass/{courseId}")
 }
 
 @Composable
@@ -47,6 +50,10 @@ fun Navigation(modifier: Modifier = Modifier, context: Context){
             composable(Routes.Detail.route) { backStackEntry ->
             val courseId = backStackEntry.arguments?.getString("id")
             DetailScreen(modifier, navController = navController, courseId)
+        }
+        composable(Routes.CreateClass.route) { backStackEntry ->
+            val courseId = backStackEntry.arguments?.getString("id")
+            CreateYogaClassScreen(modifier,navController = navController,courseId)
         }
     }
 }

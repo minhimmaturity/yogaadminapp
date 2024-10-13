@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.yoga_app.component.CreateYogaClass
 import com.example.yoga_app.component.CreateYogaCourse
 import com.example.yoga_app.component.Footer
 import com.example.yoga_app.component.Header
@@ -16,22 +17,22 @@ import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassAppViewModelFactory
 
 @Composable
-fun CreateScreen(modifier: Modifier = Modifier, navController: NavController, courseId: String?) {
+fun CreateYogaClassScreen(modifier: Modifier = Modifier, navController: NavController, courseId: String?) {
     val context = LocalContext.current
     val yogaCourseDao = AppDatabase.getDatabase(context).yogaCourseDao()
     val viewModel: YogaClassCourseViewModel = viewModel(
         factory = YogaClassAppViewModelFactory(yogaCourseDao)
     )
 
-    val isCreatingClass = false
+    val isCreatingClass = true
 
     Scaffold(
         modifier = modifier,
         topBar = { Header(navController, context) },
-        bottomBar = { Footer(navController, isCreatingClass, "") }
+        bottomBar = { Footer(navController, isCreatingClass, courseId) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            CreateYogaCourse(courseId)
+            CreateYogaClass(courseId)
         }
     }
 }
