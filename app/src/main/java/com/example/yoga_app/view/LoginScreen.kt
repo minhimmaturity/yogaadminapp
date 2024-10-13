@@ -1,5 +1,7 @@
 package com.example.yoga_app.view
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -95,7 +97,7 @@ fun LoginScreen(modifier: Modifier = Modifier, navController: NavController) {
                     auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                // Navigate to Home Screen after successful login
+                                createSession(context, email)
                                 navController.navigate(Routes.Home.route)
                             } else {
                                 // Handle failed login
@@ -120,3 +122,12 @@ fun LoginScreen(modifier: Modifier = Modifier, navController: NavController) {
         }
     }
 }
+
+private fun createSession(context: Context, email: String) {
+    val sharedPreferences: SharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString("email", email)
+    editor.apply()
+}
+
+

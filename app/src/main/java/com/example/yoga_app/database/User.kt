@@ -5,11 +5,8 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.yoga_app.utils.UserRole
-import java.util.UUID
 
-@Entity(tableName = "users",
-
-)
+@Entity(tableName = "users")
 @TypeConverters(UserRoleConverter::class)
 data class User(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

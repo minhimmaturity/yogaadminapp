@@ -7,10 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.example.yoga_app.dao.YogaClassDao
 import com.example.yoga_app.ui.theme.YogaappTheme
 import com.example.yoga_app.database.AppDatabase
-import com.example.yoga_app.viewmodel.YogaClassAppViewModel
 import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +39,7 @@ class MainActivity : ComponentActivity() {
             enableEdgeToEdge()
             setContent {
                 YogaappTheme {
-                    Navigation(modifier = Modifier.fillMaxSize())
+                    Navigation(modifier = Modifier.fillMaxSize(), this)
                 }
             }
         } catch (e: Exception) {

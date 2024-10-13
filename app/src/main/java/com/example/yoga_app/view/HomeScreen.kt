@@ -1,5 +1,6 @@
 package com.example.yoga_app.view
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,24 +13,24 @@ import com.example.yoga_app.component.Footer
 import com.example.yoga_app.component.Header
 import com.example.yoga_app.component.YogaCourseBody
 import com.example.yoga_app.database.AppDatabase
-import com.example.yoga_app.viewmodel.YogaClassAppViewModel
+import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassAppViewModelFactory
 
 @Composable
 fun CenterAlignedTopAppBarExample(modifier: Modifier = Modifier, navController: NavController) {
     val context = LocalContext.current
-    val yogaClassDao = AppDatabase.getDatabase(context).yogaClassDao()
-    val viewModel: YogaClassAppViewModel = viewModel(
-        factory = YogaClassAppViewModelFactory(yogaClassDao)
+    val yogaCourseDao = AppDatabase.getDatabase(context).yogaCourseDao()
+    val viewModel: YogaClassCourseViewModel = viewModel(
+        factory = YogaClassAppViewModelFactory(yogaCourseDao)
     )
 
     Scaffold(
         modifier = modifier,
-        topBar = { Header(navController) },
+        topBar = { Header(navController, context) },
         bottomBar = { Footer(navController) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            YogaCourseBody(viewModel)
+            YogaCourseBody(viewModel, navController)
         }
     }
 }

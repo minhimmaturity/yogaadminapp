@@ -1,16 +1,17 @@
 package com.example.yoga_app.database
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Database
 import com.example.yoga_app.dao.UserDao
 import com.example.yoga_app.dao.YogaClassDao
+import com.example.yoga_app.dao.YogaCourseDao
 
-@Database(entities = [User::class, YogaClass::class], version = 3, exportSchema = false)
+@Database(entities = [User::class, YogaCourse::class, YogaClass::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun yogaCourseDao(): YogaCourseDao
     abstract fun yogaClassDao(): YogaClassDao
 
     companion object {

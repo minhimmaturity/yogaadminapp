@@ -1,41 +1,22 @@
 package com.example.yoga_app.database
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import com.example.yoga_app.utils.YogaClassType
-import java.util.UUID
 
-@Entity(tableName = "yogaclass")
-@TypeConverters(YogaClassTypeConverter::class)
-data class YogaClass(
-    @PrimaryKey val id: String = UUID.randomUUID().toString(),
-    val className: String,
-    val yogaClassType: YogaClassType,
-    val dayOfWeek: String,
-    val time: String,
-    val capacity: Int,
-    val duration: Int,
-    val pricePerClass: Double,
-    val description: String?,
-    val instructorName: String?,
-    val location: String?,
-    val createdAt: Long = System.currentTimeMillis(),
-    var updatedAt: Long? = System.currentTimeMillis(),
-    var updatedBy: String? = null
+@Entity(
+    tableName = "yoga_class",
+    foreignKeys = [ForeignKey(
+        entity = YogaCourse::class,
+        parentColumns = ["id"],
+        childColumns = ["courseId"],
+        onDelete = ForeignKey.CASCADE
+    )]
 )
-
-class YogaClassTypeConverter {
-    @TypeConverter
-    fun fromYogaClassType(yogaClassType: YogaClassType): String {
-        return yogaClassType.name
-    }
-
-    @TypeConverter
-    fun toYogaClassType(yogaClassType: String): YogaClassType {
-        return YogaClassType.valueOf(yogaClassType)
-    }
-}
-
-
+data class YogaClass(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val courseId: String,
+    val day: String,
+    val instructorName: String,
+    val comment: String
+)
