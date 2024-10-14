@@ -3,6 +3,7 @@ package com.example.yoga_app.database
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(
     tableName = "yoga_class",
@@ -14,7 +15,7 @@ import androidx.room.PrimaryKey
     )]
 )
 data class YogaClass(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val courseId: String,
     val day: String,
     val instructorName: String,

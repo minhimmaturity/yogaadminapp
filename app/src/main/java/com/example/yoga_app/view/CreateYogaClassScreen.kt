@@ -15,13 +15,20 @@ import com.example.yoga_app.component.Header
 import com.example.yoga_app.database.AppDatabase
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassAppViewModelFactory
+import com.example.yoga_app.viewmodel.YogaClassViewModel
+import com.example.yoga_app.viewmodel.YogaClassViewModelFactory
 
 @Composable
-fun CreateYogaClassScreen(modifier: Modifier = Modifier, navController: NavController, courseId: String?) {
+fun CreateYogaClassScreen(modifier: Modifier = Modifier, navController: NavController, courseId: String?, classId: String?) {
     val context = LocalContext.current
     val yogaCourseDao = AppDatabase.getDatabase(context).yogaCourseDao()
+    val yogaClassDao = AppDatabase.getDatabase(context).yogaClassDao()
     val viewModel: YogaClassCourseViewModel = viewModel(
         factory = YogaClassAppViewModelFactory(yogaCourseDao)
+    )
+
+    val classViewModel: YogaClassViewModel = viewModel(
+        factory = YogaClassViewModelFactory(yogaClassDao)
     )
 
     val isCreatingClass = true
@@ -32,7 +39,7 @@ fun CreateYogaClassScreen(modifier: Modifier = Modifier, navController: NavContr
         bottomBar = { Footer(navController, isCreatingClass, courseId) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            CreateYogaClass(courseId)
+            CreateYogaClass(courseId, classId)
         }
     }
 }

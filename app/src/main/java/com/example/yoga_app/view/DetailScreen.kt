@@ -36,7 +36,7 @@ fun DetailScreen(modifier: Modifier = Modifier, navController: NavController, co
         bottomBar = { Footer(navController, isCreatingClass, courseId) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            YogaClassBody(viewModel, courseId)
+            YogaClassBody(viewModel, navController, courseId)
         }
     }
 }

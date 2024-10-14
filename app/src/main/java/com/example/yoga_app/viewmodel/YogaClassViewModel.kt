@@ -5,12 +5,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.yoga_app.dao.YogaClassDao
+import com.example.yoga_app.dao.YogaCourseDao
 import com.example.yoga_app.database.YogaClass
+import com.example.yoga_app.database.YogaCourse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class YogaClassViewModel(private val yogaClassDao: YogaClassDao) : ViewModel() {
     val getAllYogaClasses: Flow<List<YogaClass>> = yogaClassDao.getAllYogaClasses()
+
+    fun getYogaClassById(id: String?): Flow<YogaClass?> {
+        return if (id != null) {
+            yogaClassDao.getYogaClassById(id)
+        } else {
+            kotlinx.coroutines.flow.flowOf(null)
+        }
+    }
 
     fun insertYogaClass(yogaClass: YogaClass) {
         viewModelScope.launch {
@@ -27,7 +37,39 @@ class YogaClassViewModel(private val yogaClassDao: YogaClassDao) : ViewModel() {
     fun getYogaClassesByCourseId(courseId: String?): Flow<List<YogaClass>> {
         return yogaClassDao.getYogaClassesByCourseId(courseId)
     }
+
+    fun deleteYogaClass(classId: String) {
+        viewModelScope.launch {
+            try {
+                yogaClassDao.deleteYogaClass(classId)
+            } catch (e: Exception) {
+                Log.e("YogaClassAppViewModel", "Error inserting yoga class", e)
+                throw e
+            }
+        }
+    }
+
+    fun updateYogaClass(yogaClass: YogaClass) {
+        viewModelScope.launch {
+            try {
+                yogaClassDao.updateYogaClass(yogaClass)
+            } catch (e: Exception) {
+                Log.e("YogaClassAppViewModel", "Error inserting yoga class", e)
+                throw e
+            }
+        }
+    }
 }
+
+//class YogaClassViewModelFactory(private val yogaClassDao: YogaClassDao) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(YogaClassViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return YogaClassViewModel(yogaClassDao) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
+//}
 
 class YogaClassViewModelFactory(private val yogaClassDao: YogaClassDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

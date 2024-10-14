@@ -2,6 +2,7 @@ package com.example.yoga_app
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -23,6 +24,7 @@ sealed class Routes(val route: String) {
     data object Detail : Routes("Detail/{id}")
     data object Edit: Routes("Edit/{courseId}")
     data object CreateClass: Routes("CreateClass/{courseId}")
+    data object EditClass: Routes("EditClass/{courseId}/{classId}")
 }
 
 @Composable
@@ -47,13 +49,20 @@ fun Navigation(modifier: Modifier = Modifier, context: Context){
             val courseId = backStackEntry.arguments?.getString("courseId")
             CreateScreen(modifier, navController = navController, courseId)
         }
-            composable(Routes.Detail.route) { backStackEntry ->
+        composable(Routes.Detail.route) { backStackEntry ->
             val courseId = backStackEntry.arguments?.getString("id")
             DetailScreen(modifier, navController = navController, courseId)
         }
         composable(Routes.CreateClass.route) { backStackEntry ->
-            val courseId = backStackEntry.arguments?.getString("id")
-            CreateYogaClassScreen(modifier,navController = navController,courseId)
+            val courseId = backStackEntry.arguments?.getString("courseId")
+            CreateYogaClassScreen(modifier,navController = navController,courseId, "")
+        }
+        composable(Routes.EditClass.route) { backStackEntry ->
+            val courseId = backStackEntry.arguments?.getString("courseId")
+            val classId = backStackEntry.arguments?.getString("classId")
+            Log.d("classId", "${classId}")
+            Log.d("courseId", "${courseId}")
+            CreateYogaClassScreen(modifier, navController = navController, courseId, classId)
         }
     }
 }

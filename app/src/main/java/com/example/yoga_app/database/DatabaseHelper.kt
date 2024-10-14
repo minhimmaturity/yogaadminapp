@@ -8,7 +8,7 @@ import com.example.yoga_app.dao.UserDao
 import com.example.yoga_app.dao.YogaClassDao
 import com.example.yoga_app.dao.YogaCourseDao
 
-@Database(entities = [User::class, YogaCourse::class, YogaClass::class], version = 4, exportSchema = false)
+@Database(entities = [User::class, YogaCourse::class, YogaClass::class], version = 5, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun yogaCourseDao(): YogaCourseDao

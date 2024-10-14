@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Class
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
@@ -35,8 +36,17 @@ fun Footer(navController: NavController, isCreatingClass: Boolean, courseId: Str
                     }
                     Text("Home", style = MaterialTheme.typography.bodySmall)
                 }
+                if(isCreatingClass == true) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        IconButton(onClick = { navController.navigate(Routes.Detail.route.replace("{id}",
+                            courseId.toString()
+                        )) }) {
+                            Icon(imageVector = Icons.Filled.Class, contentDescription = "Class")
+                        }
+                        Text("Home", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    // Update the action based on whether a class is being created
                     IconButton(onClick = {
                         if (isCreatingClass) {
                             navController.navigate("CreateClass/$courseId")
@@ -54,6 +64,7 @@ fun Footer(navController: NavController, isCreatingClass: Boolean, courseId: Str
                     }
                     Text("Settings", style = MaterialTheme.typography.bodySmall)
                 }
+
             }
         }
     )

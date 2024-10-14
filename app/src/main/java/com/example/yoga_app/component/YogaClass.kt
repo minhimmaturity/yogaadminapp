@@ -1,5 +1,6 @@
 package com.example.yoga_app.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,11 +15,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.yoga_app.Routes
 import com.example.yoga_app.viewmodel.YogaClassViewModel
 
 @Composable
-fun YogaClassBody(viewModel: YogaClassViewModel = viewModel(), courseId: String?) {
+fun YogaClassBody(viewModel: YogaClassViewModel = viewModel(), navController: NavController, courseId: String?) {
     val yogaClasses by viewModel.getYogaClassesByCourseId(courseId).collectAsState(initial = emptyList())
+
+    val yogaClassViewModel: YogaClassViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -37,10 +42,14 @@ fun YogaClassBody(viewModel: YogaClassViewModel = viewModel(), courseId: String?
                     Teacher = yogaClass.instructorName,
                     comment = yogaClass.comment,
                     onEdit = {
-                        // Handle edit action here
+                        navController.navigate(
+                            Routes.EditClass.route
+                                .replace("{courseId}", courseId.toString())
+                                .replace("{classId}", yogaClass.id)
+                        )
                     },
                     onDelete = {
-
+                        yogaClassViewModel.deleteYogaClass(yogaClass.id)
                     },
                 )
             }
