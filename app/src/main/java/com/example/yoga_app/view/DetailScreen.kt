@@ -32,7 +32,7 @@ fun DetailScreen(modifier: Modifier = Modifier, navController: NavController, co
     val isCreatingClass = true
     Scaffold(
         modifier = modifier,
-        topBar = { Header(navController, context) },
+        topBar = { Header(navController, context, title = "Yoga Class") },
         bottomBar = { Footer(navController, isCreatingClass, courseId) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {

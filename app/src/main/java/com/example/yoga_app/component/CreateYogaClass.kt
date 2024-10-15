@@ -2,8 +2,6 @@ package com.example.yoga_app.component
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,19 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.yoga_app.database.AppDatabase
 import com.example.yoga_app.database.YogaClass
-import com.example.yoga_app.database.YogaCourse
-import com.example.yoga_app.utils.Weekday
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassViewModel
 import java.text.SimpleDateFormat
@@ -188,7 +179,7 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
                         if (classId != null) {
                             if (classId.isNotEmpty()) {
                                 val updateYogaClass = YogaClass(
-                                    id = (existingYogaCourse?.id ?: "").toString(),
+                                    id = (existingYogaClass?.id ?: "").toString(),
                                     courseId = (existingYogaCourse?.id ?: "").toString(),
                                     day = selectedDate,
                                     instructorName = instructorName,
@@ -202,11 +193,6 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
                                 Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
                             }
                         }
-
-                        Log.d("new yoga class data", "${newYogaClass}")
-
-                        classViewModel.insertYogaClass(newYogaClass)
-                        Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
                         Log.e("CreateYogaClass", "Error saving yoga class", e)
                         Toast.makeText(context, "Error saving yoga class: ${e.message}", Toast.LENGTH_LONG).show()

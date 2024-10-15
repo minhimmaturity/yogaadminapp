@@ -27,7 +27,7 @@ fun CreateScreen(modifier: Modifier = Modifier, navController: NavController, co
 
     Scaffold(
         modifier = modifier,
-        topBar = { Header(navController, context) },
+        topBar = { Header(navController, context, title = "Yoga Course") },
         bottomBar = { Footer(navController, isCreatingClass, "") }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {

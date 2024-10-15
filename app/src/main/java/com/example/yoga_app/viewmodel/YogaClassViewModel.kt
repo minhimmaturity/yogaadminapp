@@ -61,16 +61,6 @@ class YogaClassViewModel(private val yogaClassDao: YogaClassDao) : ViewModel() {
     }
 }
 
-//class YogaClassViewModelFactory(private val yogaClassDao: YogaClassDao) : ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(YogaClassViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return YogaClassViewModel(yogaClassDao) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}
-
 class YogaClassViewModelFactory(private val yogaClassDao: YogaClassDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(YogaClassViewModel::class.java)) {

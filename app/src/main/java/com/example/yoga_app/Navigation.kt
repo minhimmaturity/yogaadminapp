@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.yoga_app.component.CreateYogaClass
 import com.example.yoga_app.view.CenterAlignedTopAppBarExample
 import com.example.yoga_app.view.CreateScreen
 import com.example.yoga_app.view.CreateYogaClassScreen

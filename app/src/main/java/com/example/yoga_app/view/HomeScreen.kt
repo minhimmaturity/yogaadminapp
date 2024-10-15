@@ -1,6 +1,5 @@
 package com.example.yoga_app.view
 
-import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -28,7 +27,7 @@ fun CenterAlignedTopAppBarExample(modifier: Modifier = Modifier, navController: 
 
     Scaffold(
         modifier = modifier,
-        topBar = { Header(navController, context) },
+        topBar = { Header(navController, context, title = "Home") },
         bottomBar = { Footer(navController, isCreatingClass, "") }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {

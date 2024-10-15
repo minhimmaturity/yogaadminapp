@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yoga_app.component.CreateYogaClass
-import com.example.yoga_app.component.CreateYogaCourse
 import com.example.yoga_app.component.Footer
 import com.example.yoga_app.component.Header
 import com.example.yoga_app.database.AppDatabase
@@ -35,7 +34,7 @@ fun CreateYogaClassScreen(modifier: Modifier = Modifier, navController: NavContr
 
     Scaffold(
         modifier = modifier,
-        topBar = { Header(navController, context) },
+        topBar = { Header(navController, context, title = "Yoga Class") },
         bottomBar = { Footer(navController, isCreatingClass, courseId) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
