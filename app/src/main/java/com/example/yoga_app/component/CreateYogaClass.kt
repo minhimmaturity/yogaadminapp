@@ -3,6 +3,7 @@ package com.example.yoga_app.component
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,11 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,11 +31,10 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -37,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.yoga_app.database.YogaClass
+import com.example.yoga_app.viewmodel.UserViewModel
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassViewModel
 import java.text.SimpleDateFormat
@@ -55,13 +61,18 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
     val classViewModel: YogaClassViewModel = viewModel()
     val existingYogaClass by classViewModel.getYogaClassById(classId).collectAsState(initial = null)
 
+    val instructorViewModel: UserViewModel = viewModel()
+    val allInstructor by instructorViewModel.getAllInstructor.collectAsState(initial = emptyList())
+
     var isFormValid by remember { mutableStateOf(false) }
 
-    var instructorName by remember { mutableStateOf("") }
+    var instructorId by remember { mutableStateOf("") }
     var comment by remember { mutableStateOf("") }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
+
+    var showInstructorDropdown by remember { mutableStateOf(false) }
 
     var selectedDate by remember { mutableStateOf("") }
 
@@ -69,12 +80,12 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
 
     val courseDayOfWeek = existingYogaCourse?.dayOfWeek ?: ""
 
-    isFormValid = instructorName.isNotEmpty() && selectedDate.isNotEmpty()
+    isFormValid = instructorId.isNotEmpty() && selectedDate.isNotEmpty()
 
     LaunchedEffect(existingYogaClass) {
         existingYogaClass?.let { existingYogaClass ->
             selectedDate = existingYogaClass.day
-            instructorName = existingYogaClass.instructorName
+            instructorId = existingYogaClass.instructorId // Assuming the stored instructor is the ID
             comment = existingYogaClass.comment
 
             selectedDayOfWeek = getDayOfWeekFromDate(existingYogaClass.day)
@@ -126,9 +137,6 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
             }
         }
 
-        Log.d("selectedDayOfWeek", "${selectedDayOfWeek}")
-        Log.d("courseDayOfWeek", "${courseDayOfWeek}")
-
         if (courseDayOfWeek.isNotEmpty()) {
             Text(
                 text = "Course day: $courseDayOfWeek",
@@ -145,24 +153,54 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
             }
         }
 
-        // Instructor Name input
-        OutlinedTextField(
-            value = instructorName,
-            onValueChange = { newValue -> instructorName = newValue },
-            label = { Text(text = "Instructor Name") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp)
-        )
+        // Instructor Dropdown
+        ExposedDropdownMenuBox(
+            expanded = showInstructorDropdown,
+            onExpandedChange = {
+                showInstructorDropdown = !showInstructorDropdown
+            }
+        ) {
+            OutlinedTextField(
+                value = allInstructor.firstOrNull { it.id.toString() == instructorId }?.name ?: "",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Instructor") },
+                trailingIcon = {
+                    Icon(
+                        imageVector = if (showInstructorDropdown) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                        contentDescription = if (showInstructorDropdown) "Collapse dropdown" else "Expand dropdown"
+                    )
+                },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = showInstructorDropdown,
+                onDismissRequest = { showInstructorDropdown = false }
+            ) {
+                allInstructor.forEach { instructor ->
+                    DropdownMenuItem(
+                        onClick = {
+                            instructorId = instructor.id.toString()
+                            showInstructorDropdown = false
+                        },
+                        text = { Text(text = instructor.name) }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Comment input
         OutlinedTextField(
             value = comment,
             onValueChange = { newValue -> comment = newValue },
-            label = { Text(text = "Comment") },
+            label = { Text("Comment") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp)
         )
 
         // Save button
@@ -173,25 +211,23 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
                         val newYogaClass = YogaClass(
                             courseId = existingYogaCourse?.id ?: "",
                             day = selectedDate,
-                            instructorName = instructorName,
+                            instructorId = instructorId,  // Use instructor ID
                             comment = comment
                         )
-                        if (classId != null) {
-                            if (classId.isNotEmpty()) {
-                                val updateYogaClass = YogaClass(
-                                    id = (existingYogaClass?.id ?: "").toString(),
-                                    courseId = (existingYogaCourse?.id ?: "").toString(),
-                                    day = selectedDate,
-                                    instructorName = instructorName,
-                                    comment = comment
-                                )
+                        if (classId != null && classId.isNotEmpty()) {
+                            val updateYogaClass = YogaClass(
+                                id = (existingYogaClass?.id ?: "").toString(),
+                                courseId = (existingYogaCourse?.id ?: "").toString(),
+                                day = selectedDate,
+                                instructorId = instructorId,  // Use instructor ID
+                                comment = comment
+                            )
 
-                                classViewModel.updateYogaClass(updateYogaClass)
-                                Toast.makeText(context, "Yoga class updated successfully", Toast.LENGTH_SHORT).show()
-                            } else {
-                                classViewModel.insertYogaClass(newYogaClass)
-                                Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
-                            }
+                            classViewModel.updateYogaClass(updateYogaClass)
+                            Toast.makeText(context, "Yoga class updated successfully", Toast.LENGTH_SHORT).show()
+                        } else {
+                            classViewModel.insertYogaClass(newYogaClass)
+                            Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         Log.e("CreateYogaClass", "Error saving yoga class", e)
@@ -204,7 +240,7 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
                 .padding(vertical = 8.dp),
             colors = ButtonDefaults.buttonColors(disabledContainerColor = Color.Gray)
         ) {
-            Text(text = "Save", fontSize = 18.sp, modifier = Modifier.padding(4.dp))
+            Text("Save", fontSize = 18.sp, modifier = Modifier.padding(4.dp))
         }
     }
 }
@@ -221,7 +257,7 @@ fun getDayOfWeekFromDate(date: String): String {
         val calendar = Calendar.getInstance().apply { time = dateObj!! }
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         // Convert to the string representation of the day
-        Log.d("Dayofweek", "${dayOfWeek}")
+        Log.d("Dayofweek", "$dayOfWeek")
 
         when (dayOfWeek) {
             Calendar.SUNDAY -> "SUNDAY"
@@ -233,7 +269,6 @@ fun getDayOfWeekFromDate(date: String): String {
             Calendar.SATURDAY -> "SATURDAY"
             else -> ""
         }
-
 
     } catch (e: Exception) {
         ""

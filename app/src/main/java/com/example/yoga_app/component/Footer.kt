@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Class
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -60,9 +61,9 @@ fun Footer(navController: NavController, isCreatingClass: Boolean, courseId: Str
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     IconButton(onClick = { navController.navigate(Routes.Setting.route) }) {
-                        Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+                        Icon(imageVector = Icons.Filled.Book, contentDescription = "Instructor")
                     }
-                    Text("Settings", style = MaterialTheme.typography.bodySmall)
+                    Text("Instructor", style = MaterialTheme.typography.bodySmall)
                 }
 
             }

@@ -12,6 +12,8 @@ import com.example.yoga_app.component.CreateYogaClass
 import com.example.yoga_app.component.Footer
 import com.example.yoga_app.component.Header
 import com.example.yoga_app.database.AppDatabase
+import com.example.yoga_app.viewmodel.UserViewModel
+import com.example.yoga_app.viewmodel.UserViewModelFactory
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassAppViewModelFactory
 import com.example.yoga_app.viewmodel.YogaClassViewModel
@@ -22,12 +24,17 @@ fun CreateYogaClassScreen(modifier: Modifier = Modifier, navController: NavContr
     val context = LocalContext.current
     val yogaCourseDao = AppDatabase.getDatabase(context).yogaCourseDao()
     val yogaClassDao = AppDatabase.getDatabase(context).yogaClassDao()
+    val userDao = AppDatabase.getDatabase(context).userDao()
     val viewModel: YogaClassCourseViewModel = viewModel(
         factory = YogaClassAppViewModelFactory(yogaCourseDao)
     )
 
     val classViewModel: YogaClassViewModel = viewModel(
         factory = YogaClassViewModelFactory(yogaClassDao)
+    )
+
+    val userViewModel: UserViewModel = viewModel(
+        factory = UserViewModelFactory(userDao)
     )
 
     val isCreatingClass = true

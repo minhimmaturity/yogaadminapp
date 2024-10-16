@@ -16,6 +16,8 @@ import com.example.yoga_app.component.Header
 import com.example.yoga_app.component.YogaClassBody
 import com.example.yoga_app.component.YogaCourseBody
 import com.example.yoga_app.database.AppDatabase
+import com.example.yoga_app.viewmodel.UserViewModel
+import com.example.yoga_app.viewmodel.UserViewModelFactory
 import com.example.yoga_app.viewmodel.YogaClassAppViewModelFactory
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassViewModel
@@ -26,9 +28,17 @@ import com.example.yoga_app.viewmodel.YogaClassViewModelFactory
 fun DetailScreen(modifier: Modifier = Modifier, navController: NavController, courseId: String?) {
     val context = LocalContext.current
     val yogaClassDao = AppDatabase.getDatabase(context).yogaClassDao()
+    val userDao = AppDatabase.getDatabase(context).userDao()
+
+
     val viewModel: YogaClassViewModel = viewModel(
         factory = YogaClassViewModelFactory(yogaClassDao)
     )
+
+    val userViewModel: UserViewModel = viewModel(
+        factory = UserViewModelFactory(userDao)
+    )
+
     val isCreatingClass = true
     Scaffold(
         modifier = modifier,

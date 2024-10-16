@@ -72,23 +72,23 @@ fun YogaClassBody(
             )
         }
 
-        // Filter yoga classes based on search query
-        val filteredYogaClasses = if (searchQuery.isNotEmpty()) {
-            yogaClasses.filter {
-                it.instructorName.contains(searchQuery, ignoreCase = true) ||
-                        it.day.contains(searchQuery, ignoreCase = true)  // Assuming `day` is a string representing the date
-            }
-        } else {
-            yogaClasses
-        }
+//        // Filter yoga classes based on search query
+//        val filteredYogaClasses = if (searchQuery.isNotEmpty()) {
+//            yogaClasses.filter {
+//                it.instructor.contains(searchQuery, ignoreCase = true) ||
+//                        it.day.contains(searchQuery, ignoreCase = true)  // Assuming `day` is a string representing the date
+//            }
+//        } else {
+//            yogaClasses
+//        }
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(filteredYogaClasses) { yogaClass ->
+            items(yogaClasses) { yogaClass ->
                 YogaClassCard(
                     date = yogaClass.day,
-                    Teacher = yogaClass.instructorName,
+                    teacherId = yogaClass.instructorId,
                     comment = yogaClass.comment,
                     onEdit = {
                         navController.navigate(

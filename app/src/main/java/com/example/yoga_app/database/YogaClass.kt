@@ -12,12 +12,17 @@ import java.util.UUID
         parentColumns = ["id"],
         childColumns = ["courseId"],
         onDelete = ForeignKey.CASCADE
+    ), ForeignKey(
+        entity = User::class,
+        parentColumns = ["id"],
+        childColumns = ["instructorId"],
     )]
+
 )
 data class YogaClass(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val courseId: String,
     val day: String,
-    val instructorName: String,
+    val instructorId: String,
     val comment: String
 )
