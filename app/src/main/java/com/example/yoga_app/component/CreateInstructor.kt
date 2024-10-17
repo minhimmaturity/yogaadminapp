@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.yoga_app.Routes
 import com.example.yoga_app.database.User
+import com.example.yoga_app.uploadDataToFirebase
 import com.example.yoga_app.utils.UserRole
 import com.example.yoga_app.viewmodel.UserViewModel
 
@@ -182,6 +183,8 @@ fun CreateInstructor() {
                             instructorName = ""
                             email = ""
                             password = ""
+
+                            uploadDataToFirebase(context)
                         } catch (e: Exception) {
                             Log.e("CreateInstructor", "Error saving instructor", e)
                             Toast.makeText(context, "Error saving instructor: ${e.message}", Toast.LENGTH_LONG).show()

@@ -24,6 +24,7 @@ import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.collectAsState
+import com.example.yoga_app.uploadDataToFirebase
 
 @Composable
 fun CreateYogaCourse(courseId: String?) {
@@ -274,9 +275,13 @@ fun CreateYogaCourse(courseId: String?) {
 
                                 viewModel.updateCourse(updateYogaCourse)
                                 Toast.makeText(context, "Yoga class updated successfully", Toast.LENGTH_SHORT).show()
+
+                                uploadDataToFirebase(context)
                             } else {
                                 viewModel.insertYogaClass(newYogaClass)
                                 Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
+
+                                uploadDataToFirebase(context)
                             }
                         }
                     } catch (e: Exception) {

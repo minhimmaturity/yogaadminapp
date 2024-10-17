@@ -22,10 +22,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yoga_app.Routes
+import com.example.yoga_app.uploadDataToFirebase
 import com.example.yoga_app.viewmodel.YogaClassViewModel
 
 @Composable
@@ -40,6 +42,8 @@ fun YogaClassBody(
 
     var isSearchVisible by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,6 +103,7 @@ fun YogaClassBody(
                     },
                     onDelete = {
                         yogaClassViewModel.deleteYogaClass(yogaClass.id)
+                        uploadDataToFirebase(context)
                     },
                 )
             }

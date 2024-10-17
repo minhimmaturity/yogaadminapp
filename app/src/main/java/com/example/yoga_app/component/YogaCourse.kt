@@ -13,15 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yoga_app.Routes
+import com.example.yoga_app.uploadDataToFirebase
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 
 @Composable
 fun YogaCourseBody(viewModel: YogaClassCourseViewModel = viewModel(), navController: NavController) {
     val yogaCourse by viewModel.getAllYogaCourse.collectAsState(initial = emptyList())
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -49,6 +53,7 @@ fun YogaCourseBody(viewModel: YogaClassCourseViewModel = viewModel(), navControl
                     },
                     onDelete = {
                         viewModel.deleteCourse(yogaCourse.id)
+                        uploadDataToFirebase(context)
                     },
                     onViewDetail = {
                         navController.navigate("Detail/${yogaCourse.id}")

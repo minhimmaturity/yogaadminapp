@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.yoga_app.database.YogaClass
+import com.example.yoga_app.uploadDataToFirebase
 import com.example.yoga_app.viewmodel.UserViewModel
 import com.example.yoga_app.viewmodel.YogaClassCourseViewModel
 import com.example.yoga_app.viewmodel.YogaClassViewModel
@@ -225,9 +226,13 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
 
                             classViewModel.updateYogaClass(updateYogaClass)
                             Toast.makeText(context, "Yoga class updated successfully", Toast.LENGTH_SHORT).show()
+
+                            uploadDataToFirebase(context)
                         } else {
                             classViewModel.insertYogaClass(newYogaClass)
                             Toast.makeText(context, "Yoga class saved successfully", Toast.LENGTH_SHORT).show()
+
+                            uploadDataToFirebase(context)
                         }
                     } catch (e: Exception) {
                         Log.e("CreateYogaClass", "Error saving yoga class", e)

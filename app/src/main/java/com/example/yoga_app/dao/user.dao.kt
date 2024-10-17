@@ -20,4 +20,7 @@ interface UserDao {
 
     @Query("Select * from users where id = :instructorId")
     fun getInstructorById(instructorId: String): Flow<User?>
+
+    @Query("Select * from users")
+    fun getAllUser(): Flow<List<User>>
 }
