@@ -15,6 +15,8 @@ import com.example.yoga_app.database.AppDatabase
 import com.example.yoga_app.database.User
 import com.example.yoga_app.database.YogaClass
 import com.example.yoga_app.database.YogaCourse
+import com.example.yoga_app.utils.UserRole
+import com.example.yoga_app.utils.YogaClassType
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
@@ -85,18 +87,20 @@ class MainActivity : ComponentActivity() {
 
             myRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Read data as a Map or your custom class type
-                    val value = dataSnapshot.getValue(object : GenericTypeIndicator<HashMap<String, Any>>() {})
-                    if (value != null) {
-                        Log.d(TAG, "Value is: $value")
+                    // Parse the data from Firebase
+                    val data = dataSnapshot.getValue(object : GenericTypeIndicator<HashMap<String, Any>>() {})
+                    if (data != null) {
+                        Log.d(TAG, "Data from Firebase: $data")
+
+                        // Insert the data into the local SQLite (Room) database
+                        insertDataIntoLocalDatabase(data)
                     } else {
-                        Log.d(TAG, "No data found")
+                        Log.d(TAG, "No data found in Firebase.")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Failed to read value
-                    Log.w(TAG, "Failed to read value.", error.toException())
+                    Log.w(TAG, "Failed to read value from Firebase.", error.toException())
                 }
             })
 
@@ -118,6 +122,35 @@ class MainActivity : ComponentActivity() {
             }
         } catch (e: Exception) {
             Log.e("MainActivity", "${e.message}")
+        }
+    }
+
+    private fun insertDataIntoLocalDatabase(data: HashMap<String, Any>) {
+        // Extract YogaCourse, YogaClass, and User data from the HashMap
+        val yogaCoursesData = data["yogaCourses"] as? List<Map<String, Any?>>
+        val yogaClassesData = data["yogaClasses"] as? List<Map<String, Any?>>
+        val usersData = data["users"] as? List<Map<String, Any?>>
+
+        CoroutineScope(Dispatchers.IO).launch {
+            // Insert YogaCourses into Room database
+            yogaCoursesData?.forEach {
+                val yogaCourse = it.toYogaCourse()
+                db.yogaCourseDao().insertYogaCourse(yogaCourse)
+            }
+
+            // Insert YogaClasses into Room database
+            yogaClassesData?.forEach {
+                val yogaClass = it.toYogaClass()
+                db.yogaClassDao().insertYogaClass(yogaClass)
+            }
+
+            // Insert Users into Room database
+            usersData?.forEach {
+                val user = it.toUser()
+                db.userDao().insertUser(user)
+            }
+
+            Log.d("MainActivity", "Data successfully inserted into SQLite.")
         }
     }
 
@@ -178,4 +211,43 @@ fun User.toMap(): Map<String, Any?> {
         "role" to role.name // Convert enum to string
     )
 }
+
+fun Map<String, Any?>.toYogaCourse(): YogaCourse {
+    return YogaCourse(
+        id = this["id"] as String,
+        className = this["className"] as String,
+        yogaClassType = YogaClassType.valueOf(this["yogaClassType"] as String),
+        dayOfWeek = this["dayOfWeek"] as String,
+        time = this["time"] as String,
+        capacity = this["capacity"] as Int,
+        duration = this["duration"] as Int,
+        pricePerClass = this["pricePerClass"] as Double,
+        description = this["description"] as String?,
+        location = this["location"] as String,
+        createdAt = this["createdAt"] as Long,
+        updatedAt = this["updatedAt"] as Long?,
+        updatedBy = this["updatedBy"] as String?
+    )
+}
+
+fun Map<String, Any?>.toYogaClass(): YogaClass {
+    return YogaClass(
+        id = this["id"] as String,
+        courseId = this["courseId"] as String,
+        day = this["day"] as String,
+        instructorId = this["instructorId"] as String,
+        comment = this["comment"] as String
+    )
+}
+
+fun Map<String, Any?>.toUser(): User {
+    return User(
+        id = this["id"] as Long,
+        name = this["name"] as String,
+        email = this["email"] as String,
+        password = this["password"] as String,
+        role = UserRole.valueOf(this["role"] as String)
+    )
+}
+
 
