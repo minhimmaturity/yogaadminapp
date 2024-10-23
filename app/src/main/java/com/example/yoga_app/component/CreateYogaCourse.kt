@@ -28,6 +28,7 @@ import com.example.yoga_app.uploadDataToFirebase
 import com.example.yoga_app.viewmodel.YogaClassViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 
 @Composable
@@ -171,6 +172,7 @@ fun CreateYogaCourse(courseId: String?) {
                             weekDayExpanded = false
                         },
                         text = { Text(text = weekday.name) }
+
                     )
                 }
             }
@@ -248,11 +250,11 @@ fun CreateYogaCourse(courseId: String?) {
                 .padding(4.dp)
         )
 
-        // Save Button
         FilledTonalButton(
             onClick = {
                 if (isFormValid) {
                     try {
+                        // Create the new yoga course or update the existing one
                         val newYogaClass = YogaCourse(
                             className = className,
                             yogaClassType = selectedYogaClass,
@@ -283,27 +285,33 @@ fun CreateYogaCourse(courseId: String?) {
                                 viewModel.updateCourse(updateYogaCourse)
                                 Toast.makeText(context, "Yoga class updated successfully", Toast.LENGTH_SHORT).show()
 
-                                val createdAtEpochDay = existingYogaCourse?.createdAt?.div(24 * 60 * 60 * 1000) ?: 0
-                                val createdAtDate = LocalDate.ofEpochDay(createdAtEpochDay)
+                                // Adjust the day of week for all classes associated with the course
+                                val updatedDayOfWeek = selectedWeekDays
+                                val currentDate = LocalDate.now()  // Get the current date
+                                val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
 
+                                // Find the nearest date with the updated day of the week
                                 yogaClassesByCourseId?.forEach { yogaClassByCourseId ->
-                                    val nearestDayOfWeek = getNearestDayOnOrAfter(
-                                        createdAtDate,
-                                        weekdayToDayOfWeek(yogaClassByCourseId.day.toWeekday())
-                                    ).dayOfWeek
+                                    val existingDate = LocalDate.parse(yogaClassByCourseId.day, formatter)
 
+                                    val nearestDate = getNearestDayOnOrAfter(
+                                        existingDate,
+                                        weekdayToDayOfWeek(updatedDayOfWeek) // Convert to appropriate weekday enum
+                                    )
+
+                                    val formattedDate = nearestDate.format(formatter)
 
                                     val updatedYogaClass = yogaClassByCourseId.copy(
                                         id = yogaClassByCourseId.id,
-                                        day = nearestDayOfWeek.toWeekday().toString(),
+                                        day = formattedDate,
                                         instructorId = yogaClassByCourseId.instructorId,
                                         courseId = yogaClassByCourseId.courseId,
                                         comment = yogaClassByCourseId.comment
                                     )
 
                                     yogaClasses.updateYogaClass(updatedYogaClass)
-
                                 }
+
                                 uploadDataToFirebase(context)
                             } else {
                                 viewModel.insertYogaClass(newYogaClass)
@@ -330,9 +338,7 @@ fun CreateYogaCourse(courseId: String?) {
                 } else {
                     Text(text = "Save", fontSize = 18.sp, modifier = Modifier.padding(4.dp))
                 }
-
             }
-
         }
     }
 }
@@ -372,11 +378,15 @@ fun TimePickerDialog(
     )
 }
 
-fun getNearestDayOnOrAfter(createdAt: LocalDate, targetDay: DayOfWeek): LocalDate {
-    return if (createdAt.dayOfWeek == targetDay || createdAt.dayOfWeek.ordinal < targetDay.ordinal) {
-        createdAt.with(TemporalAdjusters.nextOrSame(targetDay))
+fun getNearestDayOnOrAfter(existingDate: LocalDate, targetDayOfWeek: DayOfWeek): LocalDate {
+    val currentDayOfWeek = existingDate.dayOfWeek
+
+    val daysDifference = targetDayOfWeek.value - currentDayOfWeek.value
+
+    return if (daysDifference >= 0) {
+        existingDate.plusDays(daysDifference.toLong())
     } else {
-        createdAt.with(TemporalAdjusters.next(targetDay))
+        existingDate.plusDays((7 + daysDifference).toLong())
     }
 }
 
@@ -389,43 +399,6 @@ fun weekdayToDayOfWeek(weekday: Weekday): DayOfWeek {
         Weekday.THURSDAY -> DayOfWeek.THURSDAY
         Weekday.FRIDAY -> DayOfWeek.FRIDAY
         Weekday.SATURDAY -> DayOfWeek.SATURDAY
-    }
-}
-
-fun dayOfWeekToWeekday(dayOfWeek: DayOfWeek): Weekday {
-    return when (dayOfWeek) {
-        DayOfWeek.SUNDAY -> Weekday.SUNDAY
-        DayOfWeek.MONDAY -> Weekday.MONDAY
-        DayOfWeek.TUESDAY -> Weekday.TUESDAY
-        DayOfWeek.WEDNESDAY -> Weekday.WEDNESDAY
-        DayOfWeek.THURSDAY -> Weekday.THURSDAY
-        DayOfWeek.FRIDAY -> Weekday.FRIDAY
-        DayOfWeek.SATURDAY -> Weekday.SATURDAY
-    }
-}
-
-fun String.toWeekday(): Weekday {
-    return when (this.toUpperCase()) {
-        "SUNDAY" -> Weekday.SUNDAY
-        "MONDAY" -> Weekday.MONDAY
-        "TUESDAY" -> Weekday.TUESDAY
-        "WEDNESDAY" -> Weekday.WEDNESDAY
-        "THURSDAY" -> Weekday.THURSDAY
-        "FRIDAY" -> Weekday.FRIDAY
-        "SATURDAY" -> Weekday.SATURDAY
-        else -> throw IllegalArgumentException("Invalid weekday string: $this")
-    }
-}
-
-fun DayOfWeek.toWeekday(): Weekday {
-    return when (this) {
-        DayOfWeek.SUNDAY -> Weekday.SUNDAY
-        DayOfWeek.MONDAY -> Weekday.MONDAY
-        DayOfWeek.TUESDAY -> Weekday.TUESDAY
-        DayOfWeek.WEDNESDAY -> Weekday.WEDNESDAY
-        DayOfWeek.THURSDAY -> Weekday.THURSDAY
-        DayOfWeek.FRIDAY -> Weekday.FRIDAY
-        DayOfWeek.SATURDAY -> Weekday.SATURDAY
     }
 }
 

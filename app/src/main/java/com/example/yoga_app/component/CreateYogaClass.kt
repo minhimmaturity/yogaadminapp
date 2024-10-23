@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -86,12 +85,24 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
     LaunchedEffect(existingYogaClass) {
         existingYogaClass?.let { existingYogaClass ->
             selectedDate = existingYogaClass.day
-            instructorId = existingYogaClass.instructorId // Assuming the stored instructor is the ID
+            instructorId = existingYogaClass.instructorId
             comment = existingYogaClass.comment
 
             selectedDayOfWeek = getDayOfWeekFromDate(existingYogaClass.day)
         }
     }
+
+    val calendar = Calendar.getInstance()
+    val initialDate = if (selectedDate.isNotEmpty()) {
+        try {
+            SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(selectedDate)?.let {
+                calendar.time = it
+                calendar.timeInMillis
+            }
+        } catch (e: Exception) {
+            null
+        }
+    } else null
 
     Column(
         modifier = Modifier
@@ -101,7 +112,7 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
     ) {
         OutlinedTextField(
             value = selectedDate,
-            onValueChange = { }, // Prevent manual editing
+            onValueChange = { },
             label = { Text("Day of class") },
             readOnly = true,
             trailingIcon = {
@@ -120,11 +131,13 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
         if (showDatePicker) {
             DatePickerDialog(
                 onDismissRequest = { showDatePicker = false },
+
                 confirmButton = {
                     TextButton(onClick = {
                         selectedDate = convertMillisToDate(datePickerState.selectedDateMillis!!)
                         selectedDayOfWeek = getDayOfWeekFromDate(selectedDate)
-                        showDatePicker = false }) {
+                        showDatePicker = false
+                    }) {
                         Text("OK")
                     }
                 },
@@ -134,7 +147,16 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
                     }
                 }
             ) {
-                DatePicker(state = datePickerState, showModeToggle = false)
+                DatePicker(
+                    state = datePickerState,
+                    showModeToggle = false,
+                )
+
+                LaunchedEffect(initialDate) {
+                    initialDate?.let {
+                        datePickerState.selectedDateMillis = it
+                    }
+                }
             }
         }
 
@@ -212,15 +234,15 @@ fun CreateYogaClass(courseId: String?, classId: String?) {
                         val newYogaClass = YogaClass(
                             courseId = existingYogaCourse?.id ?: "",
                             day = selectedDate,
-                            instructorId = instructorId,  // Use instructor ID
+                            instructorId = instructorId,
                             comment = comment
                         )
-                        if (classId != null && classId.isNotEmpty()) {
+                        if (!classId.isNullOrEmpty()) {
                             val updateYogaClass = YogaClass(
                                 id = (existingYogaClass?.id ?: "").toString(),
                                 courseId = (existingYogaCourse?.id ?: "").toString(),
                                 day = selectedDate,
-                                instructorId = instructorId,  // Use instructor ID
+                                instructorId = instructorId,
                                 comment = comment
                             )
 
@@ -261,8 +283,6 @@ fun getDayOfWeekFromDate(date: String): String {
         val dateObj = formatter.parse(date)
         val calendar = Calendar.getInstance().apply { time = dateObj!! }
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        // Convert to the string representation of the day
-        Log.d("Dayofweek", "$dayOfWeek")
 
         when (dayOfWeek) {
             Calendar.SUNDAY -> "SUNDAY"

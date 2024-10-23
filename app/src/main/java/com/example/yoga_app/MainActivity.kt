@@ -1,6 +1,5 @@
 package com.example.yoga_app
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import androidx.room.Room
 import com.example.yoga_app.ui.theme.YogaappTheme
 import com.example.yoga_app.database.AppDatabase
 import com.example.yoga_app.database.User
@@ -19,14 +17,8 @@ import com.example.yoga_app.utils.UserRole
 import com.example.yoga_app.utils.YogaClassType
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
-import com.google.firebase.database.getValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -84,25 +76,6 @@ class MainActivity : ComponentActivity() {
 
             val database = Firebase.database("https://yogaadminapp-61adb-default-rtdb.asia-southeast1.firebasedatabase.app/")
             myRef = database.getReference("yogaadminapp")
-
-            myRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Parse the data from Firebase
-                    val data = dataSnapshot.getValue(object : GenericTypeIndicator<HashMap<String, Any>>() {})
-                    if (data != null) {
-                        Log.d(TAG, "Data from Firebase: $data")
-
-                        // Insert the data into the local SQLite (Room) database
-                        insertDataIntoLocalDatabase(data)
-                    } else {
-                        Log.d(TAG, "No data found in Firebase.")
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "Failed to read value from Firebase.", error.toException())
-                }
-            })
 
             uploadDataToFirebase(this)
 
