@@ -50,15 +50,11 @@ fun YogaClassCard(
     }
 
     val instructorName = instructor?.name ?: ""
-
         Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-
-
-
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

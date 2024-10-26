@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
             val database = Firebase.database("https://yogaadminapp-61adb-default-rtdb.asia-southeast1.firebasedatabase.app/")
             myRef = database.getReference("yogaadminapp")
 
-            uploadDataToFirebase(this)
+            // uploadDataToFirebase(this)
 
 
             printAllTables()

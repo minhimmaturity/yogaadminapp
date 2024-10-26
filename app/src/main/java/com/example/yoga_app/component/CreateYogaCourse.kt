@@ -287,7 +287,6 @@ fun CreateYogaCourse(courseId: String?) {
 
                                 // Adjust the day of week for all classes associated with the course
                                 val updatedDayOfWeek = selectedWeekDays
-                                val currentDate = LocalDate.now()  // Get the current date
                                 val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
 
                                 // Find the nearest date with the updated day of the week
