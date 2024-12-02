@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.yoga_app.Routes
 import com.example.yoga_app.uploadDataToFirebase
+import com.example.yoga_app.viewmodel.UserViewModel
 import com.example.yoga_app.viewmodel.YogaClassViewModel
 
 @Composable
@@ -39,6 +40,9 @@ fun YogaClassBody(
     val yogaClasses by viewModel.getYogaClassesByCourseId(courseId)
         .collectAsState(initial = emptyList())
     val yogaClassViewModel: YogaClassViewModel = viewModel()
+
+    val instructorViewModel: UserViewModel = viewModel()
+    val allInstructors by instructorViewModel.getAllInstructor.collectAsState(initial = emptyList())
 
     var isSearchVisible by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -77,13 +81,13 @@ fun YogaClassBody(
         }
 
         // Filter yoga classes based on search query
-        val filteredYogaClasses = if (searchQuery.isNotEmpty()) {
-            yogaClasses.filter {
-                it.instructorId.contains(searchQuery, ignoreCase = true) ||
-                        it.day.contains(searchQuery, ignoreCase = true)
-            }
-        } else {
-            yogaClasses
+        val filteredYogaClasses = yogaClasses.filter { yogaClass ->
+            val instructorName = allInstructors.find { instructor ->
+                instructor.id.toString() == yogaClass.instructorId
+            }?.name ?: ""
+
+            instructorName.contains(searchQuery, ignoreCase = true) ||
+                    yogaClass.day.contains(searchQuery, ignoreCase = true)
         }.sortedBy { it.day }
 
         LazyColumn(

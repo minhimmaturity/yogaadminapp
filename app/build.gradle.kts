@@ -57,6 +57,8 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.code.gson:gson:2.8.9")
     // Jetpack Compose dependencies
     val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
     implementation(composeBom)
